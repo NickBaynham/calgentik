@@ -10,7 +10,7 @@ Marketing, documentation, and business site for **Calgentik** and the **Verified
 | Repo | Role |
 |------|------|
 | [NickBaynham/calgentik](https://github.com/NickBaynham/calgentik) | This site only |
-| [NickBaynham/veridoc](https://github.com/NickBaynham/veridoc) | Application and backend |
+| [NickBaynham/verifiedsignal](https://github.com/NickBaynham/verifiedsignal) | Application and backend |
 
 ---
 
@@ -157,7 +157,7 @@ Detailed steps: [`docs/aws-s3-cloudfront.md`](./docs/aws-s3-cloudfront.md).
 | Domain | Serves |
 |--------|--------|
 | **calgentik.com** | Company, marketing, documentation (this repo) |
-| **verifiedsignal.io** | VerifiedSignal application (**veridoc** repo) |
+| **verifiedsignal.io** | VerifiedSignal application (**verifiedsignal** repo) |
 
 ---
 

@@ -1,6 +1,6 @@
 /**
  * Structured site copy derived from the product reference in `content.txt`
- * (Veridoc). Public-facing pages use the VerifiedSignal brand.
+ * Sourced from the internal product reference (legacy filename: content.txt). Public-facing copy uses the VerifiedSignal brand.
  * Update this module when `content.txt` changes to keep marketing and docs in sync.
  */
 

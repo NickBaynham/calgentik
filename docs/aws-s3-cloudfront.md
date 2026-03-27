@@ -64,4 +64,4 @@ The workflow is **skipped** until `AWS_ROLE_TO_ASSUME` and `S3_BUCKET` are set, 
 ## Domain split reminder
 
 - **calgentik.com** — this static (or Amplify) site.
-- **verifiedsignal.io** — application from the **veridoc** repo (not deployed by this workflow).
+- **verifiedsignal.io** — application from the **verifiedsignal** repo (not deployed by this workflow).

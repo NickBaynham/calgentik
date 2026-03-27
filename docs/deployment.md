@@ -7,7 +7,7 @@ This document ties together hosting options, DNS, TLS, and GitHub ↔ AWS authen
 | Repository | Purpose |
 |------------|---------|
 | [NickBaynham/calgentik](https://github.com/NickBaynham/calgentik) | Marketing and documentation site (this repo). Serves **calgentik.com**. |
-| [NickBaynham/veridoc](https://github.com/NickBaynham/veridoc) | Application and backend for **verifiedsignal.io**. |
+| [NickBaynham/verifiedsignal](https://github.com/NickBaynham/verifiedsignal) | Application and backend for **verifiedsignal.io**. |
 
 ## Recommended architecture
 

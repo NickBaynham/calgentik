@@ -4,7 +4,7 @@ import { site } from "./site";
 describe("site", () => {
   it("uses HTTPS for external URLs", () => {
     expect(site.appUrl).toMatch(/^https:\/\//);
-    expect(site.githubUrl).toMatch(/^https:\/\//);
+    expect(site.githubUrl).toMatch(/^https:\/\/github\.com\/NickBaynham\/verifiedsignal$/);
   });
 
   it("uses a plausible contact email on the company domain", () => {

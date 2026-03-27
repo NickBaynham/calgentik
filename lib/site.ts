@@ -6,6 +6,6 @@ export const site = {
   description:
     "VerifiedSignal helps teams turn complex documents into structured, explainable, decision-ready signals.",
   appUrl: "https://verifiedsignal.io",
-  githubUrl: "https://github.com/NickBaynham/veridoc",
+  githubUrl: "https://github.com/NickBaynham/verifiedsignal",
   contactEmail: "hello@calgentik.com",
 } as const;

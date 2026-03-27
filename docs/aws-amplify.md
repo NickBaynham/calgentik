@@ -49,7 +49,7 @@ Set the same `NEXT_PUBLIC_*` keys as in [`.env.example`](../.env.example) for pr
 
 ## verifiedsignal.io
 
-The live product runs separately (see **veridoc** repository). This Amplify app only serves **calgentik.com**.
+The live product runs separately (see **verifiedsignal** repository). This Amplify app only serves **calgentik.com**.
 
 ## Further reading
 

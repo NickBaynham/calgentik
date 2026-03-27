@@ -14,7 +14,7 @@ export const articles: NewsArticle[] = [
     slug: "content-reference-powers-site",
     title: "Product & architecture reference now powers calgentik.com",
     excerpt:
-      "We structured the comprehensive Veridoc / VerifiedSignal reference (eight dimensions, AWS stack, SSE contracts, marketplace metering) into public pages for diligence and onboarding.",
+      "We structured the comprehensive VerifiedSignal product reference (eight dimensions, AWS stack, SSE contracts, marketplace metering) into public pages for diligence and onboarding.",
     date: "2026-03-27",
     category: "Company",
     featured: true,
@@ -28,8 +28,8 @@ export const articles: NewsArticle[] = [
     category: "Engineering",
   },
   {
-    slug: "from-veridoc-to-verifiedsignal",
-    title: "From VeriDoc to VerifiedSignal: a sharper product story",
+    slug: "rebrand-verifiedsignal",
+    title: "VerifiedSignal rebrand: a sharper product story",
     excerpt:
       "The rebrand reflects what customers actually buy: verified signals—not generic document AI—with evidence and review built in.",
     date: "2026-03-05",

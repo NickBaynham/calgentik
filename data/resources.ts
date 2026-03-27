@@ -12,7 +12,7 @@ export const mediaResources: MediaResource[] = [
     id: "overview-video",
     title: "Product overview (video)",
     description:
-      "Walkthrough-style video covering VerifiedSignal / VeriDoc document intelligence positioning and workflows.",
+      "Walkthrough-style video covering VerifiedSignal document intelligence positioning and workflows.",
     file: "videoplayback.mp4",
     kind: "video",
   },
@@ -20,8 +20,8 @@ export const mediaResources: MediaResource[] = [
     id: "podcast",
     title: "Document intelligence deep dive (audio)",
     description:
-      "Podcast-style discussion: VeriDoc, document intelligence, and the “X-ray” lens on unstructured content.",
-    file: "VeriDoc_and_the_document_intelligence_X-ray.m4a",
+      "Podcast-style discussion: VerifiedSignal, document intelligence, and the “X-ray” lens on unstructured content.",
+    file: "VerifiedSignal_and_the_document_intelligence_X-ray.m4a",
     kind: "audio",
   },
   {
@@ -29,7 +29,7 @@ export const mediaResources: MediaResource[] = [
     title: "Document intelligence brief (PDF)",
     description:
       "Downloadable PDF overview you can share offline or attach to diligence packets.",
-    file: "Veridoc_Document_Intelligence.pdf",
+    file: "VerifiedSignal_Document_Intelligence.pdf",
     kind: "pdf",
   },
 ];
