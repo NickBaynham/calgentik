@@ -1,0 +1,25 @@
+# AWS Amplify Hosting build specification (GitHub App connection).
+# In the Amplify console: connect repo NickBaynham/calgentik, select this branch mapping:
+#   main    → production
+#   develop → staging (create a second Amplify branch or use branch subdomains)
+# Feature branches → enable "Pull request previews" in Amplify for preview URLs.
+#
+# Docs: docs/aws-amplify.md
+
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*

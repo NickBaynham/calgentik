@@ -1,0 +1,24 @@
+# API (preview)
+
+VerifiedSignal is **API-first** at higher commercial tiers: export scores as CSV/JSON and embed review flows in existing tools.
+
+## Event contract (SSE)
+
+Status streaming uses one-way **Server-Sent Events**. Clients should expect JSON payloads shaped like stage transitions:
+
+```json
+{
+  "event": "stage",
+  "document_id": "doc_123",
+  "stage": "extract_text",
+  "status": "running",
+  "timestamp": "2026-03-26T22:11:10Z",
+  "progress": 35
+}
+```
+
+Infrastructure must disable buffering on reverse proxies (for example `X-Accel-Buffering: no` on Nginx) so events flush immediately.
+
+## TODO
+
+- Publish OpenAPI/JSON Schema for document submission, collection management, and score retrieval once endpoints stabilize.

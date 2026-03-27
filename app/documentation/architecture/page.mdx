@@ -1,0 +1,17 @@
+# Architecture (reference summary)
+
+## Canonical vs. derived state
+
+PostgreSQL remains the **system of record** for users, permissions, billing, final scores, and checkpoints. Amazon OpenSearch holds **derived** full-text, vector (kNN), and analytics views. If search drifts, rebuild the index from Postgres—truth does not live in the cluster.
+
+## Managed services
+
+The reference stack pairs **AWS Amplify** for edge delivery, **S3** with presigned uploads, **Cognito** for identity (including Marketplace-native paths), **Textract** for OCR, and **Bedrock** (Converse API) for structured LLM scoring.
+
+## Pipeline shape
+
+Intake creates a queued row, workers acquire bytes and hash them, Textract extracts text, enrichment adds metadata, Bedrock produces structured scores, results persist to Postgres, OpenSearch indexes asynchronously, and the UI receives completion via **SSE**.
+
+## Failure handling
+
+Malformed JSON is incrementally parsed and validated; search outages defer indexing; worker crashes resume from checkpoints; Redis loss falls back to polling with Postgres-backed event logs.

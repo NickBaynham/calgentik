@@ -1,0 +1,15 @@
+# Deployment
+
+## Targets
+
+- **Local / bare metal:** filesystem or MinIO plus a single-node OpenSearch for developer parity.
+- **Containers:** Docker Compose for repeatable stacks your team can share.
+- **AWS:** ECS Fargate for services, RDS for Postgres, and Amazon OpenSearch Service for search/analytics.
+
+## Marketplace operations
+
+AWS Marketplace subscriptions arrive with an `x-amzn-marketplace-token`. The backend exchanges it for a **customer identifier** tied to billing. Hourly jobs can aggregate document counts in Postgres and call **BatchMeterUsage** so usage lines up with entitlements.
+
+## Observability
+
+Pair structured logs from workers with SSE timelines in the UI so operators can correlate user-visible delays with backend stage latency.

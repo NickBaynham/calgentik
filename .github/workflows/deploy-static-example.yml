@@ -1,0 +1,88 @@
+# -----------------------------------------------------------------------------
+# EXAMPLE: Deploy a fully static Next.js export to S3 + optional CloudFront purge.
+#
+# Prerequisite — this repo does NOT enable static export by default (Amplify path
+# is preferred for full Next.js). Before using this workflow you MUST add to
+# next.config.ts (see docs/aws-s3-cloudfront.md):
+#
+#   output: 'export',
+#   images: { unoptimized: true },  // if you use next/image with static export
+#
+# The build output directory will be ./out
+#
+# AWS: create an IAM role for GitHub OIDC (docs/deployment.md) and set GitHub
+# repository variables: AWS_ROLE_TO_ASSUME, AWS_REGION, S3_BUCKET,
+# CLOUDFRONT_DISTRIBUTION_ID (optional).
+# -----------------------------------------------------------------------------
+
+name: Deploy static site (S3 example)
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Build and upload to S3
+    if: ${{ vars.AWS_ROLE_TO_ASSUME != '' && vars.S3_BUCKET != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME }}
+      S3_BUCKET: ${{ vars.S3_BUCKET }}
+      CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint, typecheck, and unit tests
+        run: |
+          npm run lint
+          npm run typecheck
+          npm run test
+
+      - name: Build static export
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://calgentik.com' }}
+          NEXT_PUBLIC_APP_URL: ${{ vars.NEXT_PUBLIC_APP_URL || 'https://verifiedsignal.io' }}
+
+      - name: Verify static output exists
+        run: |
+          if [ ! -d out ]; then
+            echo "::error::No 'out' directory. Enable next.config.ts output: 'export' for static hosting."
+            exit 1
+          fi
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Sync to S3
+        run: aws s3 sync out/ "s3://${S3_BUCKET}/" --delete
+
+      - name: Invalidate CloudFront
+        if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${CLOUDFRONT_DISTRIBUTION_ID}" \
+            --paths "/*"
