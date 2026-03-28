@@ -18,7 +18,7 @@ describe("mediaResources", () => {
 
   it("uses expected file extensions", () => {
     for (const r of mediaResources) {
-      if (r.kind === "video") expect(r.file).toMatch(/\.mp4$/i);
+      if (r.kind === "video") expect(r.file).toMatch(/\.(mp4|mov|webm)$/i);
       if (r.kind === "audio") expect(r.file).toMatch(/\.m4a$/i);
       if (r.kind === "pdf") expect(r.file).toMatch(/\.pdf$/i);
     }

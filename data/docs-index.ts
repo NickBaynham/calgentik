@@ -18,9 +18,15 @@ export const docsSections: DocLink[] = [
   },
   {
     title: "API",
-    description: "API-first design patterns and integration expectations.",
+    description: "API-first design patterns, SSE notes, and links to the OpenAPI draft.",
     href: "/documentation/api",
     badge: "Preview",
+  },
+  {
+    title: "OpenAPI",
+    description: "Interactive Swagger UI for the HTTP API (draft specification).",
+    href: "/documentation/openapi",
+    badge: "Draft",
   },
   {
     title: "Deployment",

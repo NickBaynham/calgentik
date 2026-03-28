@@ -6,6 +6,7 @@ import { Container } from "@/components/layout/Container";
 import { CTASection } from "@/components/sections/CTASection";
 import { FeatureGrid } from "@/components/sections/FeatureGrid";
 import { HeroSection } from "@/components/sections/HeroSection";
+import { ProductDemoVideo } from "@/components/sections/ProductDemoVideo";
 import { SectionHeader } from "@/components/sections/SectionHeader";
 import {
   agenticWorkflow,
@@ -42,6 +43,8 @@ export default function HomePage() {
           { label: "Launch App", href: site.appUrl, external: true },
         ]}
       />
+
+      <ProductDemoVideo />
 
       <section className="border-b border-[var(--border)] bg-[var(--bg-elevated)] py-16">
         <Container>

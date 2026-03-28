@@ -9,6 +9,14 @@ export type MediaResource = {
 
 export const mediaResources: MediaResource[] = [
   {
+    id: "screen-recording-demo",
+    title: "Product demo (screen recording)",
+    description:
+      "In-app screen capture showing VerifiedSignal in use—upload, review, scoring overlays, and core workflows.",
+    file: "VerifiedSignal_screen_recording_demo.mov",
+    kind: "video",
+  },
+  {
     id: "overview-video",
     title: "Product overview (video)",
     description:

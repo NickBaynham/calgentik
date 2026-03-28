@@ -19,6 +19,11 @@ Status streaming uses one-way **Server-Sent Events**. Clients should expect JSON
 
 Infrastructure must disable buffering on reverse proxies (for example `X-Accel-Buffering: no` on Nginx) so events flush immediately.
 
-## TODO
+## OpenAPI (draft)
 
-- Publish OpenAPI/JSON Schema for document submission, collection management, and score retrieval once endpoints stabilize.
+An interactive **Swagger UI** viewer and the raw **OpenAPI 3** YAML are published on this site as a working draft:
+
+- [OpenAPI / Swagger explorer](/documentation/openapi)
+- [Download `verifiedsignal.yaml`](/openapi/verifiedsignal.yaml)
+
+JSON Schema for every field will tighten as the production API stabilizes.

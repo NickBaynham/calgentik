@@ -1,0 +1,430 @@
+openapi: 3.0.3
+info:
+  title: VerifiedSignal API
+  description: |
+    **Draft** OpenAPI description for the VerifiedSignal HTTP API. Paths, schemas, and the base URL are illustrative until the production service publishes a canonical specification.
+
+    **Server-Sent Events:** document processing status is streamed as SSE. Clients should send `Accept: text/event-stream` and expect newline-delimited event data. Reverse proxies must disable response buffering (for example `X-Accel-Buffering: no` on Nginx) so events flush immediately.
+  version: 0.1.0
+  contact:
+    name: VerifiedSignal
+    url: https://verifiedsignal.io
+
+servers:
+  - url: https://api.verifiedsignal.io/v1
+    description: Production (illustrative — confirm with your deployment)
+  - url: http://localhost:8000/v1
+    description: Local development (illustrative)
+
+tags:
+  - name: Documents
+    description: Ingestion and lifecycle of documents under review.
+  - name: Collections
+    description: Grouping and organization of documents.
+  - name: Scores
+    description: Retrieval of scoring outputs (CSV/JSON at higher tiers).
+
+security:
+  - bearerAuth: []
+
+paths:
+  /documents:
+    post:
+      tags: [Documents]
+      summary: Submit a document
+      description: Upload or register a document for extraction, scoring, and review.
+      operationId: createDocument
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                collection_id:
+                  type: string
+                  example: col_01hxyz
+                external_ref:
+                  type: string
+                  description: Caller-supplied correlation id.
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DocumentCreate"
+      responses:
+        "202":
+          description: Accepted for processing.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+    get:
+      tags: [Documents]
+      summary: List documents
+      operationId: listDocuments
+      parameters:
+        - $ref: "#/components/parameters/cursor"
+        - $ref: "#/components/parameters/limit"
+        - name: collection_id
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Paginated document list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentList"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+  /documents/{document_id}:
+    get:
+      tags: [Documents]
+      summary: Get document
+      operationId: getDocument
+      parameters:
+        - $ref: "#/components/parameters/documentId"
+      responses:
+        "200":
+          description: Document metadata and current stage.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /documents/{document_id}/events:
+    get:
+      tags: [Documents]
+      summary: Subscribe to processing events (SSE)
+      description: |
+        Opens a **Server-Sent Events** stream. Each message body is JSON shaped like `StageEvent`.
+        Infrastructure must not buffer the response body for this route.
+      operationId: streamDocumentEvents
+      parameters:
+        - $ref: "#/components/parameters/documentId"
+      responses:
+        "200":
+          description: Event stream (`text/event-stream`).
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                example: |
+                  event: stage
+                  data: {"event":"stage","document_id":"doc_123","stage":"extract_text","status":"running","timestamp":"2026-03-26T22:11:10Z","progress":35}
+
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /collections:
+    get:
+      tags: [Collections]
+      summary: List collections
+      operationId: listCollections
+      parameters:
+        - $ref: "#/components/parameters/cursor"
+        - $ref: "#/components/parameters/limit"
+      responses:
+        "200":
+          description: Paginated collections.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionList"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+
+    post:
+      tags: [Collections]
+      summary: Create collection
+      operationId: createCollection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectionCreate"
+      responses:
+        "201":
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Collection"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  /collections/{collection_id}:
+    get:
+      tags: [Collections]
+      summary: Get collection
+      operationId: getCollection
+      parameters:
+        - $ref: "#/components/parameters/collectionId"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Collection"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    patch:
+      tags: [Collections]
+      summary: Update collection
+      operationId: updateCollection
+      parameters:
+        - $ref: "#/components/parameters/collectionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CollectionPatch"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Collection"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /documents/{document_id}/scores:
+    get:
+      tags: [Scores]
+      summary: Get scores for a document
+      description: Returns structured score payloads; CSV export may be available under separate content negotiation at higher tiers.
+      operationId: getDocumentScores
+      parameters:
+        - $ref: "#/components/parameters/documentId"
+        - name: Accept
+          in: header
+          schema:
+            type: string
+            enum: [application/json, text/csv]
+      responses:
+        "200":
+          description: Scores payload.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScoreBundle"
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: API token or OAuth2 access token (exact scheme TBD).
+
+  parameters:
+    documentId:
+      name: document_id
+      in: path
+      required: true
+      schema:
+        type: string
+        example: doc_01hxyz
+    collectionId:
+      name: collection_id
+      in: path
+      required: true
+      schema:
+        type: string
+        example: col_01hxyz
+    cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+      description: Opaque pagination cursor.
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+
+  responses:
+    Unauthorized:
+      description: Missing or invalid credentials.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    ValidationError:
+      description: Request validation failed.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+
+    StageEvent:
+      type: object
+      required: [event, document_id, stage, status, timestamp]
+      properties:
+        event:
+          type: string
+          example: stage
+        document_id:
+          type: string
+          example: doc_123
+        stage:
+          type: string
+          example: extract_text
+        status:
+          type: string
+          enum: [pending, running, succeeded, failed]
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-03-26T22:11:10Z"
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+          example: 35
+
+    DocumentCreate:
+      type: object
+      properties:
+        source_url:
+          type: string
+          format: uri
+        collection_id:
+          type: string
+        external_ref:
+          type: string
+
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+        stage:
+          type: string
+        collection_id:
+          type: string
+          nullable: true
+        external_ref:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    DocumentList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Document"
+        next_cursor:
+          type: string
+          nullable: true
+
+    Collection:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+
+    CollectionCreate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    CollectionPatch:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+
+    CollectionList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Collection"
+        next_cursor:
+          type: string
+          nullable: true
+
+    ScoreBundle:
+      type: object
+      description: Tier-dependent shape; extend when the scoring model is frozen.
+      additionalProperties: true

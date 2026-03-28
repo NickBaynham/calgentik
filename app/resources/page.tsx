@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { mediaResources } from "@/data/resources";
+import { videoSourceMimeType } from "@/lib/media";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -66,8 +67,8 @@ export default function ResourcesPage() {
                         preload="metadata"
                         playsInline
                       >
-                        <source src={url} type="video/mp4" />
-                        <a href={url}>Download the video (MP4)</a>
+                        <source src={url} type={videoSourceMimeType(item.file)} />
+                        <a href={url}>Download the video</a>
                       </video>
                     ) : null}
                     {item.kind === "audio" ? (
