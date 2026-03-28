@@ -4,7 +4,7 @@
 #   develop → staging (create a second Amplify branch or use branch subdomains)
 # Feature branches → enable "Pull request previews" in Amplify for preview URLs.
 #
-# Docs: docs/aws-amplify.md
+# Docs: guides/aws-amplify.md
 
 version: 1
 frontend:

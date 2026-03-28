@@ -63,7 +63,7 @@ deploy-check: test ## Verify build + tests (no AWS calls)
 deploy: deploy-check ## Show how production deployment happens (no cloud upload from Make)
 	@echo ""
 	@echo "Deployment is not run from Make (no AWS credentials in this repo)."
-	@echo "Preferred: connect this repo in AWS Amplify — see docs/aws-amplify.md"
-	@echo "Alternative (static export): GitHub Actions — docs/aws-s3-cloudfront.md"
-	@echo "Overview: docs/deployment.md"
+	@echo "Preferred: connect this repo in AWS Amplify — see guides/aws-amplify.md"
+	@echo "Alternative (static export): GitHub Actions — guides/aws-s3-cloudfront.md"
+	@echo "Overview: guides/deployment.md"
 	@echo ""

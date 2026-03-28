@@ -2,7 +2,7 @@ export type MediaResource = {
   id: string;
   title: string;
   description: string;
-  /** Path under /resources/ (symlinked from /docs in repo). */
+  /** Served from `public/resources/` (filename only). */
   file: string;
   kind: "video" | "audio" | "pdf";
 };

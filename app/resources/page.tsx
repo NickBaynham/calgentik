@@ -16,7 +16,7 @@ export default function ResourcesPage() {
       <HeroSection
         eyebrow="Resources"
         title="Video, audio, and documents"
-        subtitle="Supplementary materials from the docs folder—stream in the browser or download for offline review."
+        subtitle="Stream in the browser or download for offline review."
         ctas={[
           { label: "Documentation", href: "/documentation", variant: "secondary" },
           { label: "Contact", href: "/contact", variant: "secondary" },

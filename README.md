@@ -76,14 +76,14 @@ Deployment to AWS is **not** executed from Make (no long-lived credentials in th
 | Step | Command | What it does |
 |------|---------|----------------|
 | Pre-deploy verification | `make deploy-check` | Same as `make test` — confirms the app builds cleanly. |
-| Deployment instructions | `make deploy` | Runs `deploy-check`, then prints where to deploy (**Amplify** vs **GitHub Actions + S3**) and points to `docs/`. |
+| Deployment instructions | `make deploy` | Runs `deploy-check`, then prints where to deploy (**Amplify** vs **GitHub Actions + S3**) and points to `guides/`. |
 
 **You still:**
 
 1. Push to GitHub (`main` / `develop` as appropriate).
 2. Let **AWS Amplify** (preferred) or **GitHub Actions** ([`deploy-static-example.yml`](./.github/workflows/deploy-static-example.yml)) perform the actual upload.
 
-Details: [docs/deployment.md](./docs/deployment.md), [docs/aws-amplify.md](./docs/aws-amplify.md).
+Details: [guides/deployment.md](./guides/deployment.md), [guides/aws-amplify.md](./guides/aws-amplify.md).
 
 ### Cleanup
 
@@ -142,7 +142,7 @@ Workflow: [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)
 | `develop` | Staging |
 | `main` | Production (`calgentik.com`) |
 
-Detailed steps: [`docs/aws-amplify.md`](./docs/aws-amplify.md).
+Detailed steps: [`guides/aws-amplify.md`](./guides/aws-amplify.md).
 
 ### Alternative: GitHub Actions → S3 → CloudFront → Route 53
 
@@ -150,7 +150,7 @@ Detailed steps: [`docs/aws-amplify.md`](./docs/aws-amplify.md).
 - Example workflow: [`.github/workflows/deploy-static-example.yml`](./.github/workflows/deploy-static-example.yml) (uses **GitHub OIDC**; no long-lived AWS keys).
 - The deploy job **does not run** until repository variables `AWS_ROLE_TO_ASSUME` and `S3_BUCKET` are configured.
 
-Detailed steps: [`docs/aws-s3-cloudfront.md`](./docs/aws-s3-cloudfront.md).
+Detailed steps: [`guides/aws-s3-cloudfront.md`](./guides/aws-s3-cloudfront.md).
 
 ### Domain split
 
@@ -176,10 +176,10 @@ Detailed steps: [`docs/aws-s3-cloudfront.md`](./docs/aws-s3-cloudfront.md).
 
 | Doc | Contents |
 |-----|----------|
-| [`docs/deployment.md`](./docs/deployment.md) | Overview, OIDC trust/policy **examples**, checklist |
-| [`docs/github-oidc.md`](./docs/github-oidc.md) | OIDC summary and links |
-| [`docs/aws-amplify.md`](./docs/aws-amplify.md) | Amplify + GitHub, branches, domains |
-| [`docs/aws-s3-cloudfront.md`](./docs/aws-s3-cloudfront.md) | Static export, S3 sync, CloudFront, Route 53 |
+| [`guides/deployment.md`](./guides/deployment.md) | Overview, OIDC trust/policy **examples**, checklist |
+| [`guides/github-oidc.md`](./guides/github-oidc.md) | OIDC summary and links |
+| [`guides/aws-amplify.md`](./guides/aws-amplify.md) | Amplify + GitHub, branches, domains |
+| [`guides/aws-s3-cloudfront.md`](./guides/aws-s3-cloudfront.md) | Static export, S3 sync, CloudFront, Route 53 |
 
 ---
 
@@ -189,7 +189,8 @@ Detailed steps: [`docs/aws-s3-cloudfront.md`](./docs/aws-s3-cloudfront.md).
 - `components/` — UI components  
 - `data/`, `lib/` — Content and helpers  
 - `public/` — Static assets  
-- `docs/` — Deployment guides (Markdown) and optional media you add locally  
+- `guides/` — Deployment guides (Markdown) for AWS Amplify, S3/CloudFront, and OIDC  
+- `public/resources/` — Large media (video, audio, PDF) served by the site  
 - `Makefile` — Local setup, run, test, and deploy-helper commands  
 
 ---

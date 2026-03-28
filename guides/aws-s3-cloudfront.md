@@ -59,7 +59,7 @@ The workflow is **skipped** until `AWS_ROLE_TO_ASSUME` and `S3_BUCKET` are set, 
 ## Cost and operations
 
 - You manage cache TTLs, invalidations, and bucket lifecycle.
-- Large media under `public/` or `docs/` increases sync time and origin storage; consider moving heavy assets to S3/CloudFront separately or using external CDN URLs.
+- Large media under `public/` increases sync time and origin storage; consider moving heavy assets to S3/CloudFront separately or using external CDN URLs.
 
 ## Hosting the product demo video (S3 + CloudFront)
 
