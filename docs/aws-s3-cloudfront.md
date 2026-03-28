@@ -61,6 +61,30 @@ The workflow is **skipped** until `AWS_ROLE_TO_ASSUME` and `S3_BUCKET` are set, 
 - You manage cache TTLs, invalidations, and bucket lifecycle.
 - Large media under `public/` or `docs/` increases sync time and origin storage; consider moving heavy assets to S3/CloudFront separately or using external CDN URLs.
 
+## Hosting the product demo video (S3 + CloudFront)
+
+The screen recording used on the homepage and **Resources** can stay out of the Git repo and Amplify bundle by serving it from S3 (optionally in front of CloudFront).
+
+1. **Create a bucket** (e.g. `calgentik-media`) in the same account/region you prefer. For a public object URL or CloudFront origin, either:
+   - use a **bucket policy** allowing `s3:GetObject` for `arn:aws:s3:::bucket-name/media/*` (and block public access off only for that prefix pattern if you use a dedicated prefix), or
+   - keep the bucket **private** and use **CloudFront** with **Origin Access Control (OAC)** so only the distribution can read objects (recommended for production).
+
+2. **Upload the file** (replace local path and key):
+
+   ```bash
+   aws s3 cp ./path/to/verifiedsignal-demo.mp4 \
+     s3://YOUR_BUCKET/media/verifiedsignal-demo.mp4 \
+     --content-type "video/mp4"
+   ```
+
+   Prefer a **re-encoded H.264 `.mp4`** for smaller size and broader browser support; set `--content-type video/mp4` accordingly.
+
+3. **CloudFront (optional but typical):** Create a distribution with the S3 bucket as origin, allow **GET** and **HEAD**, and use the object URL like `https://dxxxxxxxxxx.cloudfront.net/media/verifiedsignal-demo.mp4`. Ensure the response supports **byte-range requests** (default for S3/CloudFront) so the `<video>` element can seek.
+
+4. **Wire the site:** Set **`NEXT_PUBLIC_DEMO_VIDEO_URL`** to that **HTTPS** URL in Amplify (**App settings → Environment variables**) and redeploy. The app will stream and link to S3/CloudFront instead of `/resources/...`.
+
+See also [`.env.example`](../.env.example).
+
 ## Domain split reminder
 
 - **calgentik.com** — this static (or Amplify) site.

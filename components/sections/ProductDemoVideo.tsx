@@ -1,16 +1,11 @@
 import Link from "next/link";
 import { Container } from "@/components/layout/Container";
 import { SectionHeader } from "@/components/sections/SectionHeader";
-import { videoSourceMimeType } from "@/lib/media";
-
-const DEMO_FILE = "VerifiedSignal_screen_recording_demo.mov";
-
-function demoUrl() {
-  return `/resources/${encodeURIComponent(DEMO_FILE)}`;
-}
+import { getDemoVideoPlayback, isDemoVideoRemote } from "@/lib/demo-video";
 
 export function ProductDemoVideo() {
-  const url = demoUrl();
+  const { url, mimeType } = getDemoVideoPlayback();
+  const remote = isDemoVideoRemote();
   return (
     <section className="border-b border-[var(--border)] bg-[var(--surface-muted)]/40 py-16">
       <Container>
@@ -26,7 +21,7 @@ export function ProductDemoVideo() {
             preload="metadata"
             playsInline
           >
-            <source src={url} type={videoSourceMimeType(DEMO_FILE)} />
+            <source src={url} type={mimeType} />
             <a href={url} className="text-[var(--accent-strong)] hover:underline">
               Download the screen recording
             </a>
@@ -39,7 +34,9 @@ export function ProductDemoVideo() {
               Open in Resources →
             </Link>
             <span className="text-[var(--text-muted)]">
-              Large file—first play may take a moment while the stream buffers.
+              {remote
+                ? "Video is streamed from cloud storage (S3/CloudFront)."
+                : "Served as H.264 MP4 for broad browser support."}
             </span>
           </p>
         </div>

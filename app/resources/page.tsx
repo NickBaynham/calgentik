@@ -2,17 +2,13 @@ import type { Metadata } from "next";
 import { Container } from "@/components/layout/Container";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { mediaResources } from "@/data/resources";
-import { videoSourceMimeType } from "@/lib/media";
+import { mediaPlaybackMimeType, resolveMediaPlaybackUrl } from "@/lib/demo-video";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Resources",
   description: `Video, audio, and PDF resources for ${site.name} and document intelligence.`,
 };
-
-function mediaUrl(file: string) {
-  return `/resources/${encodeURIComponent(file)}`;
-}
 
 export default function ResourcesPage() {
   return (
@@ -31,7 +27,7 @@ export default function ResourcesPage() {
         <Container>
           <ul className="flex flex-col gap-16">
             {mediaResources.map((item) => {
-              const url = mediaUrl(item.file);
+              const url = resolveMediaPlaybackUrl(item.id, item.file);
               return (
                 <li key={item.id} id={item.id}>
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -67,7 +63,10 @@ export default function ResourcesPage() {
                         preload="metadata"
                         playsInline
                       >
-                        <source src={url} type={videoSourceMimeType(item.file)} />
+                        <source
+                          src={url}
+                          type={mediaPlaybackMimeType(item.id, item.file, url)}
+                        />
                         <a href={url}>Download the video</a>
                       </video>
                     ) : null}
