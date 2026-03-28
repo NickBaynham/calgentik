@@ -1,5 +1,21 @@
 # Architecture (reference summary)
 
+<figure className="not-prose my-10 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] shadow-lg">
+  <img
+    src="/images/architecture-overview.png"
+    alt="VerifiedSignal system architecture overview diagram."
+    width={2718}
+    height={1522}
+    className="h-auto w-full"
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption className="border-t border-[var(--border)] px-4 py-3 text-center text-sm text-[var(--text-muted)]">
+    High-level architecture infographic (same asset as the{" "}
+    <a href="/technology#architecture-overview">Technology</a> page).
+  </figcaption>
+</figure>
+
 ## Canonical vs. derived state
 
 PostgreSQL remains the **system of record** for users, permissions, billing, final scores, and checkpoints. Amazon OpenSearch holds **derived** full-text, vector (kNN), and analytics views. If search drifts, rebuild the index from Postgres—truth does not live in the cluster.

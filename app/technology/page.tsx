@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { ArchitectureFlow } from "@/components/sections/ArchitectureFlow";
 import { ComparisonTable } from "@/components/sections/ComparisonTable";
 import { Container } from "@/components/layout/Container";
@@ -53,6 +54,34 @@ export default function TechnologyPage() {
           <div className="mt-10">
             <FeatureGrid items={stackItems} columns={2} />
           </div>
+        </Container>
+      </section>
+
+      <section
+        id="architecture-overview"
+        className="border-b border-[var(--border)] bg-[var(--surface-muted)]/30 py-16"
+      >
+        <Container>
+          <SectionHeader
+            eyebrow="Visual overview"
+            title="System architecture infographic"
+            description="End-to-end view of major components, flows, and integrations."
+          />
+          <figure className="card-surface mt-10 overflow-hidden rounded-2xl transition duration-300">
+            <Image
+              src="/images/architecture-overview.png"
+              alt="VerifiedSignal platform architecture: services, data stores, workers, and client flows across AWS and the application stack."
+              width={2718}
+              height={1522}
+              sizes="(max-width: 768px) 100vw, min(72rem, 100vw)"
+              className="h-auto w-full"
+              quality={90}
+              priority={false}
+            />
+            <figcaption className="border-t border-[var(--border)] px-4 py-3 text-center text-xs text-[var(--text-muted)]">
+              Architectural overview of the VerifiedSignal platform.
+            </figcaption>
+          </figure>
         </Container>
       </section>
 
