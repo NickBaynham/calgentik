@@ -10,33 +10,51 @@ function remoteDemoUrl(): string | undefined {
   return v || undefined;
 }
 
-/** True when the demo streams from an absolute URL (e.g. S3/CloudFront). */
+/** Optional HTTPS origin for all files in `public/resources/` (S3 static website or CloudFront). */
+function remoteMediaBase(): string | undefined {
+  const b = process.env.NEXT_PUBLIC_MEDIA_BASE_URL?.trim();
+  return b ? b.replace(/\/$/, "") : undefined;
+}
+
+function objectUrlUnderBase(base: string, filename: string): string {
+  const path = filename.split("/").map(encodeURIComponent).join("/");
+  return `${base}/${path}`;
+}
+
+/** True when the homepage demo resolves to an absolute URL (CDN or per-demo override). */
 export function isDemoVideoRemote(): boolean {
-  return Boolean(remoteDemoUrl());
+  const url = resolveMediaPlaybackUrl(DEMO_SCREEN_RECORDING_ID, LOCAL_DEMO_FILE);
+  return url.startsWith("http://") || url.startsWith("https://");
 }
 
 /**
  * Playback URL for the homepage / demo screen recording.
- * Set `NEXT_PUBLIC_DEMO_VIDEO_URL` to the public object URL (HTTPS) to stream from S3/CloudFront.
+ *
+ * Precedence: `NEXT_PUBLIC_DEMO_VIDEO_URL` (exact object) → `NEXT_PUBLIC_MEDIA_BASE_URL` + filename → `/resources/…`.
  */
 export function getDemoVideoPlayback(): { url: string; mimeType: string } {
-  const remote = remoteDemoUrl();
-  if (remote) {
-    return { url: remote, mimeType: mimeTypeForUrl(remote, LOCAL_DEMO_FILE) };
-  }
-  return {
-    url: `/resources/${encodeURIComponent(LOCAL_DEMO_FILE)}`,
-    mimeType: videoSourceMimeType(LOCAL_DEMO_FILE),
-  };
+  const url = resolveMediaPlaybackUrl(DEMO_SCREEN_RECORDING_ID, LOCAL_DEMO_FILE);
+  const mimeType =
+    url.startsWith("http://") || url.startsWith("https://")
+      ? mimeTypeForUrl(url, LOCAL_DEMO_FILE)
+      : videoSourceMimeType(LOCAL_DEMO_FILE);
+  return { url, mimeType };
 }
 
 /**
- * Resolves stream/download URL for a media resource row (local `/resources/` unless demo override).
+ * Resolves stream/download URL for a media resource row.
+ *
+ * Precedence for the screen recording: `NEXT_PUBLIC_DEMO_VIDEO_URL` → `NEXT_PUBLIC_MEDIA_BASE_URL` → local.
+ * For all other assets: `NEXT_PUBLIC_MEDIA_BASE_URL` → local.
  */
 export function resolveMediaPlaybackUrl(resourceId: string, localFile: string): string {
   if (resourceId === DEMO_SCREEN_RECORDING_ID) {
-    const remote = remoteDemoUrl();
-    if (remote) return remote;
+    const specific = remoteDemoUrl();
+    if (specific) return specific;
+  }
+  const base = remoteMediaBase();
+  if (base) {
+    return objectUrlUnderBase(base, localFile);
   }
   return `/resources/${encodeURIComponent(localFile)}`;
 }

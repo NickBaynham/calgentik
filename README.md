@@ -112,7 +112,7 @@ Tests live next to code as `*.test.ts` / `*.test.tsx` (see `vitest.config.ts`).
 
 ## Environment variables
 
-Copy [`.env.example`](./.env.example) to `.env.local` and adjust, or run **`make configure`** once. All keys are `NEXT_PUBLIC_*` (safe for the browser; no secrets in the example file).
+Copy [`.env.example`](./.env.example) to `.env.local` and adjust, or run **`make configure`** once. All keys are `NEXT_PUBLIC_*` (safe for the browser; no secrets in the example file). Optional **`NEXT_PUBLIC_MEDIA_BASE_URL`** points video, audio, and PDF **Resources** at S3/CloudFront so large files can stay out of Git—see [`guides/aws-s3-cloudfront.md`](./guides/aws-s3-cloudfront.md#hosting-resources-media-s3--cloudfront).
 
 ---
 

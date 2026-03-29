@@ -45,7 +45,7 @@ If the first build fails, use the Amplify console **Build settings** editor to m
 
 In Amplify: **App settings → Environment variables**.
 
-Set the same `NEXT_PUBLIC_*` keys as in [`.env.example`](../.env.example) for production (and per-branch overrides for staging if needed). If the product demo video is hosted on S3/CloudFront, set **`NEXT_PUBLIC_DEMO_VIDEO_URL`** there as well (see [S3 + CloudFront – demo video](./aws-s3-cloudfront.md#hosting-the-product-demo-video-s3--cloudfront)).
+Set the same `NEXT_PUBLIC_*` keys as in [`.env.example`](../.env.example) for production (and per-branch overrides for staging if needed). To serve large **Resources** files from S3/CloudFront, set **`NEXT_PUBLIC_MEDIA_BASE_URL`** (and optionally **`NEXT_PUBLIC_DEMO_VIDEO_URL`** for a custom demo URL). See [S3 + CloudFront – Resources media](./aws-s3-cloudfront.md#hosting-resources-media-s3--cloudfront).
 
 ## verifiedsignal.io
 
