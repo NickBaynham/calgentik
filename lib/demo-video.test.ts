@@ -11,6 +11,8 @@ describe("demo video URL resolution", () => {
   });
 
   it("uses local /resources path when no remote env is set", () => {
+    vi.stubEnv("MEDIA_BASE_URL", "");
+    vi.stubEnv("DEMO_VIDEO_URL", "");
     vi.stubEnv("NEXT_PUBLIC_DEMO_VIDEO_URL", "");
     vi.stubEnv("NEXT_PUBLIC_MEDIA_BASE_URL", "");
     const { url, mimeType } = getDemoVideoPlayback();
@@ -20,6 +22,7 @@ describe("demo video URL resolution", () => {
   });
 
   it("uses remote URL for demo playback when env is set", () => {
+    vi.stubEnv("MEDIA_BASE_URL", "");
     vi.stubEnv("NEXT_PUBLIC_DEMO_VIDEO_URL", "https://cdn.example.com/media/demo.mp4");
     expect(getDemoVideoPlayback()).toEqual({
       url: "https://cdn.example.com/media/demo.mp4",
@@ -28,6 +31,7 @@ describe("demo video URL resolution", () => {
   });
 
   it("resolveMediaPlaybackUrl: DEMO_VIDEO_URL only overrides screen-recording id", () => {
+    vi.stubEnv("MEDIA_BASE_URL", "");
     vi.stubEnv("NEXT_PUBLIC_DEMO_VIDEO_URL", "https://cdn.example.com/x.mov");
     vi.stubEnv("NEXT_PUBLIC_MEDIA_BASE_URL", "");
     expect(resolveMediaPlaybackUrl(DEMO_SCREEN_RECORDING_ID, "local.mov")).toBe(
@@ -39,8 +43,9 @@ describe("demo video URL resolution", () => {
   });
 
   it("resolveMediaPlaybackUrl uses MEDIA_BASE_URL for all assets when set", () => {
+    vi.stubEnv("MEDIA_BASE_URL", "https://media.example.com/static");
     vi.stubEnv("NEXT_PUBLIC_DEMO_VIDEO_URL", "");
-    vi.stubEnv("NEXT_PUBLIC_MEDIA_BASE_URL", "https://media.example.com/static");
+    vi.stubEnv("NEXT_PUBLIC_MEDIA_BASE_URL", "");
     expect(resolveMediaPlaybackUrl(DEMO_SCREEN_RECORDING_ID, "VerifiedSignal_screen_recording_demo.mp4")).toBe(
       "https://media.example.com/static/VerifiedSignal_screen_recording_demo.mp4",
     );
@@ -52,9 +57,17 @@ describe("demo video URL resolution", () => {
     );
   });
 
+  it("falls back to NEXT_PUBLIC_MEDIA_BASE_URL when MEDIA_BASE_URL is unset", () => {
+    vi.stubEnv("MEDIA_BASE_URL", "");
+    vi.stubEnv("NEXT_PUBLIC_DEMO_VIDEO_URL", "");
+    vi.stubEnv("NEXT_PUBLIC_MEDIA_BASE_URL", "https://legacy.example.com/r");
+    expect(resolveMediaPlaybackUrl("overview-video", "a.mp4")).toBe("https://legacy.example.com/r/a.mp4");
+  });
+
   it("DEMO_VIDEO_URL wins over MEDIA_BASE_URL for screen recording", () => {
+    vi.stubEnv("MEDIA_BASE_URL", "https://media.example.com/static");
     vi.stubEnv("NEXT_PUBLIC_DEMO_VIDEO_URL", "https://cdn.example.com/only-demo.mp4");
-    vi.stubEnv("NEXT_PUBLIC_MEDIA_BASE_URL", "https://media.example.com/static");
+    vi.stubEnv("NEXT_PUBLIC_MEDIA_BASE_URL", "");
     expect(resolveMediaPlaybackUrl(DEMO_SCREEN_RECORDING_ID, "VerifiedSignal_screen_recording_demo.mp4")).toBe(
       "https://cdn.example.com/only-demo.mp4",
     );

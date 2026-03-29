@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description: `Video, audio, and PDF resources for ${site.name} and document intelligence.`,
 };
 
+/** Resolve S3/CDN URLs at request time (Amplify env), not only at build time. */
+export const dynamic = "force-dynamic";
+
 export default function ResourcesPage() {
   return (
     <>

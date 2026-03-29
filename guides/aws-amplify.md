@@ -47,6 +47,8 @@ In Amplify: **App settings → Environment variables**.
 
 Set the same `NEXT_PUBLIC_*` keys as in [`.env.example`](../.env.example) for production (and per-branch overrides for staging if needed). To serve large **Resources** files from S3/CloudFront, set **`NEXT_PUBLIC_MEDIA_BASE_URL`** (and optionally **`NEXT_PUBLIC_DEMO_VIDEO_URL`** for a custom demo URL). See [S3 + CloudFront – Resources media](./aws-s3-cloudfront.md#hosting-resources-media-s3--cloudfront).
 
+If **`public/resources/`** is empty in Git, set **`MEDIA_BASE_URL`** in Amplify to your S3/CloudFront HTTPS origin (same value you would use for `NEXT_PUBLIC_MEDIA_BASE_URL`, no trailing slash). **`MEDIA_BASE_URL`** is read at **runtime** by the server and middleware, so iframe/video URLs stay correct even when the variable was not present at the first build. You may set **`NEXT_PUBLIC_MEDIA_BASE_URL`** to the same string for consistency. Without a media base URL, `/resources/<filename>` returns **404** (see root `middleware.ts` for redirects).
+
 ## verifiedsignal.io
 
 The live product runs separately (see **verifiedsignal** repository). This Amplify app only serves **calgentik.com**.

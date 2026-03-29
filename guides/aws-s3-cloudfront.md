@@ -119,6 +119,45 @@ So the path after the hostname must match the key prefix where you synced the fi
 
 Add the variable in **Amplify → App settings → Environment variables** (and in `.env.local` for local testing), then redeploy.
 
+### 3a. Fix `403 Forbidden` on direct S3 URLs
+
+If `curl -sI https://YOUR_BUCKET.s3.REGION.amazonaws.com/some-file.pdf` returns **403** and `Content-Type: application/xml`, the bucket is **private**. Browsers cannot load PDFs, video, or audio from that URL until anonymous **`s3:GetObject`** is allowed (or you front the bucket with **CloudFront** and a public distribution).
+
+**Option A — public read on the whole bucket prefix (simplest for marketing media)**
+
+1. Open **S3** → your bucket → **Permissions**.
+2. **Block public access (bucket settings)** → **Edit**. Uncheck the options that **block bucket policies** granting public access (AWS shows four toggles; you must allow **new** public bucket policies if they are currently all on). Save.
+3. **Bucket policy** → **Edit** and paste (replace the bucket name if needed):
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObjectForCalgentikMedia",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::calgentik-media/*"
+    }
+  ]
+}
+```
+
+4. Confirm **Object Ownership** / ACLs are not blocking reads (default **Bucket owner enforced** is fine with the policy above).
+5. Re-test:
+
+```bash
+curl -sI "https://calgentik-media.s3.us-east-1.amazonaws.com/VerifiedSignal_Document_Intelligence.pdf" | head -5
+```
+
+You want **`HTTP/1.1 200`** (and ideally **`Content-Type: application/pdf`** on the object metadata in S3).
+
+Anyone who knows the URL can download the file—acceptable for public marketing assets; use **CloudFront + OAC** and tighter rules if you need a private bucket later.
+
+**Option B — keep the bucket private**  
+Use **CloudFront** with **Origin Access Control**, make the distribution publicly readable, and set **`MEDIA_BASE_URL`** to the **CloudFront** URL instead of the S3 REST hostname.
+
 ### 4. Optional: different URL for the screen recording only
 
 **`NEXT_PUBLIC_DEMO_VIDEO_URL`** overrides **only** the product demo asset (homepage + Resources). It wins over **`NEXT_PUBLIC_MEDIA_BASE_URL`** for that one file—useful if that video lives at a different path or hostname.

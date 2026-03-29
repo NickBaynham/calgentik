@@ -1,3 +1,4 @@
+import { getMediaBaseUrl } from "@/lib/media-base";
 import { videoSourceMimeType } from "@/lib/media";
 
 /** MediaResources id for the in-app screen recording. */
@@ -6,14 +7,13 @@ export const DEMO_SCREEN_RECORDING_ID = "screen-recording-demo";
 const LOCAL_DEMO_FILE = "VerifiedSignal_screen_recording_demo.mp4";
 
 function remoteDemoUrl(): string | undefined {
-  const v = process.env.NEXT_PUBLIC_DEMO_VIDEO_URL?.trim();
+  const v =
+    process.env.DEMO_VIDEO_URL?.trim() || process.env.NEXT_PUBLIC_DEMO_VIDEO_URL?.trim();
   return v || undefined;
 }
 
-/** Optional HTTPS origin for all files in `public/resources/` (S3 static website or CloudFront). */
 function remoteMediaBase(): string | undefined {
-  const b = process.env.NEXT_PUBLIC_MEDIA_BASE_URL?.trim();
-  return b ? b.replace(/\/$/, "") : undefined;
+  return getMediaBaseUrl();
 }
 
 function objectUrlUnderBase(base: string, filename: string): string {

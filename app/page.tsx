@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   description: `${site.tagline} ${brand.trustTagline} ${site.description}`,
 };
 
+/** Demo video URL uses `MEDIA_BASE_URL` / CDN env at request time (see `lib/media-base.ts`). */
+export const dynamic = "force-dynamic";
+
 export default function HomePage() {
   const capabilityItems = eightDimensions.map((d) => ({
     title: d.title,
