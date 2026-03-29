@@ -14,6 +14,10 @@ frontend:
         - npm ci
     build:
       commands:
+        # `next.config.ts` redirects `/resources/:file` → S3 only when this is set at build time.
+        # Default matches the production media bucket (override in Amplify → Environment variables).
+        - export NEXT_PUBLIC_MEDIA_BASE_URL="${NEXT_PUBLIC_MEDIA_BASE_URL:-https://calgentik-media.s3.us-east-1.amazonaws.com}"
+        - export MEDIA_BASE_URL="${MEDIA_BASE_URL:-$NEXT_PUBLIC_MEDIA_BASE_URL}"
         - npm run build
   artifacts:
     baseDirectory: .next

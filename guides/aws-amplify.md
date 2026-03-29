@@ -17,7 +17,8 @@ Amplify is the recommended way to host this Next.js marketing and documentation 
 The repo includes [`amplify.yml`](../amplify.yml):
 
 - `npm ci` in `preBuild`
-- `npm run build` in `build`
+- `build` sets a **default** `NEXT_PUBLIC_MEDIA_BASE_URL` (S3 HTTPS origin) when the variable is unset in the Amplify console, so `next.config.ts` can emit `/resources/*` → S3 redirects; override in **Environment variables** if you use another bucket or CloudFront URL.
+- `npm run build`
 - Caches `node_modules` and `.next/cache`
 
 ### Artifacts (`baseDirectory`)
