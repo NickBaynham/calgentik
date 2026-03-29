@@ -1,14 +1,25 @@
+function normalizeBase(v: string | undefined): string | undefined {
+  const t = v?.trim();
+  return t ? t.replace(/\/$/, "") : undefined;
+}
+
 /**
- * CDN / S3 origin for files that used to live under `public/resources/`.
- *
- * Prefer `MEDIA_BASE_URL` (no `NEXT_PUBLIC_` prefix) so values are read at **request
- * time** on the server and in middleware—Amplify often injects env after build, and
- * `NEXT_PUBLIC_*` can be inlined at build time only.
- *
- * `NEXT_PUBLIC_MEDIA_BASE_URL` is still supported as a fallback (local dev, older setups).
+ * Node server (App Router): prefer `MEDIA_BASE_URL` so Amplify can inject at **runtime**
+ * without relying on build-time inlining.
  */
 export function getMediaBaseUrl(): string | undefined {
-  const v =
-    process.env.MEDIA_BASE_URL?.trim() || process.env.NEXT_PUBLIC_MEDIA_BASE_URL?.trim();
-  return v ? v.replace(/\/$/, "") : undefined;
+  return normalizeBase(
+    process.env.MEDIA_BASE_URL || process.env.NEXT_PUBLIC_MEDIA_BASE_URL,
+  );
+}
+
+/**
+ * Edge Middleware: **`NEXT_PUBLIC_MEDIA_BASE_URL` is usually required** — many hosts
+ * (including Amplify) only bundle `NEXT_PUBLIC_*` into the edge bundle, so
+ * `MEDIA_BASE_URL` may be empty here and `/resources/*` redirects would not run.
+ */
+export function getMediaBaseUrlForEdge(): string | undefined {
+  return normalizeBase(
+    process.env.NEXT_PUBLIC_MEDIA_BASE_URL || process.env.MEDIA_BASE_URL,
+  );
 }

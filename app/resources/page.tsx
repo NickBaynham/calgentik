@@ -3,6 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { mediaResources } from "@/data/resources";
 import { mediaPlaybackMimeType, resolveMediaPlaybackUrl } from "@/lib/demo-video";
+import { getMediaBaseUrl } from "@/lib/media-base";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -14,8 +15,24 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default function ResourcesPage() {
+  const mediaBase = getMediaBaseUrl();
+
   return (
     <>
+      {!mediaBase ? (
+        <div className="border-b border-amber-500/40 bg-amber-950/40 px-4 py-3 text-center text-sm text-amber-100">
+          <strong className="font-semibold">Media CDN not configured.</strong> Set{" "}
+          <code className="rounded bg-black/30 px-1">MEDIA_BASE_URL</code> or{" "}
+          <code className="rounded bg-black/30 px-1">NEXT_PUBLIC_MEDIA_BASE_URL</code> to your S3
+          HTTPS origin (e.g.{" "}
+          <code className="rounded bg-black/30 px-1">
+            https://calgentik-media.s3.us-east-1.amazonaws.com
+          </code>
+          ). On Amplify, set <strong>both</strong> to the same value and redeploy — Edge middleware
+          needs the <code className="rounded bg-black/30 px-1">NEXT_PUBLIC_</code> name for{" "}
+          <code className="rounded bg-black/30 px-1">/resources/*</code> redirects.
+        </div>
+      ) : null}
       <HeroSection
         eyebrow="Resources"
         title="Video, audio, and documents"

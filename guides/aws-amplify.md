@@ -47,7 +47,12 @@ In Amplify: **App settings → Environment variables**.
 
 Set the same `NEXT_PUBLIC_*` keys as in [`.env.example`](../.env.example) for production (and per-branch overrides for staging if needed). To serve large **Resources** files from S3/CloudFront, set **`NEXT_PUBLIC_MEDIA_BASE_URL`** (and optionally **`NEXT_PUBLIC_DEMO_VIDEO_URL`** for a custom demo URL). See [S3 + CloudFront – Resources media](./aws-s3-cloudfront.md#hosting-resources-media-s3--cloudfront).
 
-If **`public/resources/`** is empty in Git, set **`MEDIA_BASE_URL`** in Amplify to your S3/CloudFront HTTPS origin (same value you would use for `NEXT_PUBLIC_MEDIA_BASE_URL`, no trailing slash). **`MEDIA_BASE_URL`** is read at **runtime** by the server and middleware, so iframe/video URLs stay correct even when the variable was not present at the first build. You may set **`NEXT_PUBLIC_MEDIA_BASE_URL`** to the same string for consistency. Without a media base URL, `/resources/<filename>` returns **404** (see root `middleware.ts` for redirects).
+If **`public/resources/`** is empty in Git, set **both** of these in Amplify to the **same** S3 (or CloudFront) HTTPS origin — **no trailing slash**, and **no path prefix** if objects live at the bucket root (e.g. `https://calgentik-media.s3.us-east-1.amazonaws.com`):
+
+- **`NEXT_PUBLIC_MEDIA_BASE_URL`** — **required** for **Edge Middleware** (`middleware.ts`) so `/resources/filename` redirects and the bundled edge code sees the base URL.
+- **`MEDIA_BASE_URL`** — used first on the **Node** server when resolving `<video>`, PDF iframe, and download links at request time.
+
+Redeploy after changing either variable. Without them, the Resources page shows a warning banner and media URLs fall back to `/resources/...`, which **404** when those files are not in `public/`.
 
 ## verifiedsignal.io
 

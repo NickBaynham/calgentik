@@ -40,4 +40,20 @@ export const mediaResources: MediaResource[] = [
     file: "VerifiedSignal_Document_Intelligence.pdf",
     kind: "pdf",
   },
+  {
+    id: "pdf-product-architecture-guide",
+    title: "Product & architecture guide (PDF)",
+    description:
+      "Comprehensive reference: product scope, architecture, and how VerifiedSignal fits into document intelligence workflows.",
+    file: "VerifiedSignal Reference Document_ Comprehensive Product & Architecture Guide.pdf",
+    kind: "pdf",
+  },
+  {
+    id: "pdf-use-cases",
+    title: "Use cases (PDF)",
+    description:
+      "Scenario-focused overview of where VerifiedSignal applies and how teams get value from structured review on unstructured documents.",
+    file: "VerifiedSignal_UseCases.pdf",
+    kind: "pdf",
+  },
 ];

@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getMediaBaseUrl } from "@/lib/media-base";
+import { getMediaBaseUrlForEdge } from "@/lib/media-base";
 
 /**
  * When media lives on S3 and `public/resources/` is empty, direct requests to
@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const base = getMediaBaseUrl();
+  const base = getMediaBaseUrlForEdge();
   if (!base) {
     return NextResponse.next();
   }
