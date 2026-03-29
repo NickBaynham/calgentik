@@ -15,9 +15,32 @@ import createMDX from "@next/mdx";
  *   Then `next build` writes to `./out`. See `guides/aws-s3-cloudfront.md` and
  *   `.github/workflows/deploy-static-example.yml`.
  */
+
+/** S3 / CDN base for files not in `public/resources/` (read at `next build` on Amplify). */
+function mediaBaseForRedirects(): string | null {
+  const v =
+    process.env.NEXT_PUBLIC_MEDIA_BASE_URL?.trim() || process.env.MEDIA_BASE_URL?.trim();
+  return v ? v.replace(/\/$/, "") : null;
+}
+
 const nextConfig: NextConfig = {
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
   transpilePackages: ["swagger-ui-react"],
+  /**
+   * Works when Edge Middleware env is missing. Use `:file` (one segment) so `/resources`
+   * still serves the page; `/resources/:path*` incorrectly matched bare `/resources` in Next.
+   */
+  async redirects() {
+    const base = mediaBaseForRedirects();
+    if (!base) return [];
+    return [
+      {
+        source: "/resources/:file",
+        destination: `${base}/:file`,
+        permanent: false,
+      },
+    ];
+  },
 };
 
 const withMDX = createMDX({});

@@ -52,7 +52,7 @@ If **`public/resources/`** is empty in Git, set **both** of these in Amplify to 
 - **`NEXT_PUBLIC_MEDIA_BASE_URL`** — **required** for **Edge Middleware** (`middleware.ts`) so `/resources/filename` redirects and the bundled edge code sees the base URL.
 - **`MEDIA_BASE_URL`** — used first on the **Node** server when resolving `<video>`, PDF iframe, and download links at request time.
 
-Redeploy after changing either variable. Without them, the Resources page shows a warning banner and media URLs fall back to `/resources/...`, which **404** when those files are not in `public/`.
+Redeploy after changing either variable. **`NEXT_PUBLIC_MEDIA_BASE_URL` must be present when Amplify runs `next build`** so [`next.config.ts`](../next.config.ts) can emit a **`/resources/:file` → S3** redirect (reliable even when Edge Middleware does not see server-only env). Without a base URL, the Resources page shows a warning banner and `/resources/...` **404** when those files are not in `public/`.
 
 ## verifiedsignal.io
 
