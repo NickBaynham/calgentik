@@ -1,0 +1,48 @@
+Create a minimal but production-ready website framework (marketing/docs-style Next.js app) with the following tooling only—no product-specific pages, copy, or business logic. Use current stable versions aligned with this stack.
+
+Runtime & app
+Next.js (App Router) with TypeScript
+React (same major line Next expects)
+next.config as TypeScript where supported
+Path alias @/ → project root in both TypeScript and Vitest
+Styling
+Tailwind CSS v4 with PostCSS integration for Next
+@tailwindcss/typography for long-form content
+Content (optional wiring, not real articles)
+MDX support via @next/mdx (and related MDX packages) so documentation-style pages can live under app/ as needed
+Quality gates
+ESLint 9 with eslint-config-next
+npm run lint → eslint .
+npm run typecheck → tsc --noEmit
+package.json scripts: dev, build, start, lint, typecheck, test, test:watch
+Testing
+Vitest with @vitejs/plugin-react
+Test environment jsdom
+@testing-library/react, @testing-library/user-event, @testing-library/jest-dom with a vitest.setup.ts that imports @testing-library/jest-dom/vitest
+vitest.config.ts: include **/*.{test,spec}.{ts,tsx}**, clearMocks: true, same @/ alias as the app
+Example tests: at least one client component test (mock fetch for form/API interaction) and one Route Handler test (POST handler) with the external HTTP/email SDK mocked (e.g. constructor mock), covering validation, success, and provider failure paths
+Environment & secrets
+.env.example that clearly separates:
+NEXT_PUBLIC_* (safe for the browser / build-time embedding)
+server-only variables (never prefixed with NEXT_PUBLIC_) for API routes and email delivery
+Document that private recipient addresses and API keys belong only in server env and hosting consoles, not in client code
+CI (GitHub Actions)
+Workflow on pull requests and pushes to main and develop
+Node 20, npm ci, then in order: npm run lint, npm run typecheck, npm run test, npm run build
+Use concurrency to cancel superseded runs on the same branch
+permissions: contents: read
+Pass minimal placeholder NEXT_PUBLIC_* values in the build step so next build succeeds in CI without real secrets
+Deploy (AWS Amplify Hosting)
+Root amplify.yml for a Next.js SSR/hybrid artifact:
+preBuild: npm ci
+build: export any build-time public env vars needed by Next (use shell defaults with ${VAR:-default} only for non-secret placeholders), then npm run build
+artifacts.baseDirectory: .next, files: **/*
+cache: node_modules/**/* and .next/cache/**/*
+Add a short guides/ markdown note explaining Amplify environment variables, which keys must exist at build vs runtime, and that server-only secrets are set in the console—not in NEXT_PUBLIC_*
+Optional (include as thin vertical slice, still generic)
+One POST API route that sends email through a transactional email provider’s official SDK (e.g. Resend), reading API key and recipient from server env only
+A small client form that posts JSON to that route, with basic UX states (loading / error / success) and a honeypot field
+No real email addresses or API keys committed; only placeholders in .env.example
+Deliver: file tree, key config files, CI workflow, amplify.yml, Vitest + ESLint + TS configs, and enough stub pages/components to prove dev, build, test, and Amplify deployment work end-to-end.
+
+That prompt encodes the same develop → lint/typecheck/test/build → GitHub CI → Amplify loop and the Vitest + Testing Library + mocked route pattern, without naming this project or its domain-specific features.
