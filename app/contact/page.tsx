@@ -15,7 +15,7 @@ export default function ContactPage() {
       <HeroSection
         eyebrow="Contact"
         title="Request a demo or start a conversation"
-        subtitle="Choose the inquiry type that fits—demo, investor, partnership, or technical deep dive. This form is front-end only until you connect an API endpoint."
+        subtitle="Choose the inquiry type that fits—demo, investor, partnership, or technical deep dive. We read every submission and reply from our team."
         ctas={[{ label: "Launch App", href: site.appUrl, external: true, variant: "secondary" }]}
       />
       <section className="pb-20">

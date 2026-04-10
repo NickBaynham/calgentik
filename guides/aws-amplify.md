@@ -55,6 +55,16 @@ If **`public/resources/`** is empty in Git, set **both** of these in Amplify to 
 
 Redeploy after changing either variable. **`NEXT_PUBLIC_MEDIA_BASE_URL` must be present when Amplify runs `next build`** so [`next.config.ts`](../next.config.ts) can emit a **`/resources/:file` → S3** redirect (reliable even when Edge Middleware does not see server-only env). Without a base URL, the Resources page shows a warning banner and `/resources/...` **404** when those files are not in `public/`.
 
+### Contact form email
+
+The **Contact** page posts to [`/api/contact`](../app/api/contact/route.ts). Configure **server-only** variables in Amplify (never `NEXT_PUBLIC_*` for the inbox):
+
+- **`RESEND_API_KEY`** — from [Resend](https://resend.com/) (or leave unset to disable the route with a clear error).
+- **`CONTACT_INBOX_EMAIL`** — private recipient address (not shown in the site UI or client bundle).
+- **`RESEND_FROM_EMAIL`** (optional) — a verified-domain **From** address; if omitted, the route uses Resend’s onboarding sender, which has [delivery limits](https://resend.com/docs) until you verify **calgentik.com** (or another domain) in Resend.
+
+Redeploy after adding or changing these keys.
+
 ## verifiedsignal.io
 
 The live product runs separately (see **verifiedsignal** repository). This Amplify app only serves **calgentik.com**.
