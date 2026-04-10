@@ -149,7 +149,7 @@ Never commit AWS credentials to the repository.
 
 - [ ] **DNS:** `calgentik.com` (and `www` if used) points to Amplify or CloudFront as required by the chosen product.
 - [ ] **TLS:** Certificate in **ACM** in the correct region (us-east-1 for CloudFront; Amplify manages ACM for its front door).
-- [ ] **Environment variables:** Set `NEXT_PUBLIC_*` in Amplify console or GitHub Variables as needed (see `.env.example`).
+- [ ] **Environment variables:** Set `NEXT_PUBLIC_*` in Amplify console or GitHub Variables as needed (see `.env.example`). For the **Contact** form (`/api/contact`), also set server-only **`RESEND_API_KEY`**, **`CONTACT_INBOX_EMAIL`**, and optionally **`RESEND_FROM_EMAIL`** in Amplify, then redeploy—see [Contact form email](./aws-amplify.md#contact-form-email) in `aws-amplify.md`.
 - [ ] **Build:** CI green (`lint`, `typecheck`, `build`); run a local `npm run build` before release.
 - [ ] **Cache:** CloudFront or Amplify caching tuned; after S3 deploy, invalidate or wait for TTL.
 - [ ] **Smoke test:** Load `/`, `/documentation`, `/resources`; verify links to **verifiedsignal.io**.

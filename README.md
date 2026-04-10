@@ -112,7 +112,10 @@ Tests live next to code as `*.test.ts` / `*.test.tsx` (see `vitest.config.ts`).
 
 ## Environment variables
 
-Copy [`.env.example`](./.env.example) to `.env.local` and adjust, or run **`make configure`** once. All keys are `NEXT_PUBLIC_*` (safe for the browser; no secrets in the example file). Optional **`NEXT_PUBLIC_MEDIA_BASE_URL`** points video, audio, and PDF **Resources** at S3/CloudFront so large files can stay out of Git—see [`guides/aws-s3-cloudfront.md`](./guides/aws-s3-cloudfront.md#hosting-resources-media-s3--cloudfront).
+Copy [`.env.example`](./.env.example) to `.env.local` and adjust, or run **`make configure`** once.
+
+- **`NEXT_PUBLIC_*`** — safe to expose to the browser; used for site URLs, media base URLs, and similar. Optional **`NEXT_PUBLIC_MEDIA_BASE_URL`** points video, audio, and PDF **Resources** at S3/CloudFront so large files can stay out of Git—see [`guides/aws-s3-cloudfront.md`](./guides/aws-s3-cloudfront.md#hosting-resources-media-s3--cloudfront).
+- **Server-only (no `NEXT_PUBLIC_` prefix)** — required for the **Contact** form to send email via Resend: **`RESEND_API_KEY`** and **`CONTACT_INBOX_EMAIL`**, plus optional **`RESEND_FROM_EMAIL`**. Set them in **`.env.local`** for local dev (restart **`next dev`** after changes). On **AWS Amplify**, add the same keys under **App settings → Environment variables** and redeploy—see [Contact form email](./guides/aws-amplify.md#contact-form-email) in [`guides/aws-amplify.md`](./guides/aws-amplify.md).
 
 ---
 
@@ -165,7 +168,7 @@ Detailed steps: [`guides/aws-s3-cloudfront.md`](./guides/aws-s3-cloudfront.md).
 
 - [ ] **DNS** — `calgentik.com` (and `www` if used) targets Amplify or CloudFront.
 - [ ] **TLS** — ACM certificate (Amplify-managed, or us-east-1 cert for CloudFront).
-- [ ] **Environment variables** — Set `NEXT_PUBLIC_*` in Amplify or CI as needed.
+- [ ] **Environment variables** — Set `NEXT_PUBLIC_*` in Amplify or CI as needed. For a working **Contact** form, set server-only **`RESEND_API_KEY`**, **`CONTACT_INBOX_EMAIL`**, and optionally **`RESEND_FROM_EMAIL`** ([Contact form email](./guides/aws-amplify.md#contact-form-email) in the Amplify guide).
 - [ ] **Build** — CI green; local `make ci` or `npm run build` succeeds.
 - [ ] **Cache** — CloudFront invalidation or Amplify cache behavior after releases.
 - [ ] **Smoke test** — Home, docs, resources; links to **verifiedsignal.io** work.

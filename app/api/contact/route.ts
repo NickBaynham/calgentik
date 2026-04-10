@@ -39,8 +39,20 @@ export async function POST(req: NextRequest) {
   const inbox = process.env.CONTACT_INBOX_EMAIL;
 
   if (!apiKey?.trim() || !inbox?.trim()) {
+    const missing: string[] = [];
+    if (!apiKey?.trim()) missing.push("RESEND_API_KEY");
+    if (!inbox?.trim()) missing.push("CONTACT_INBOX_EMAIL");
+
     return NextResponse.json(
-      { error: "Contact delivery is not configured on the server." },
+      {
+        error: "Contact delivery is not configured on the server.",
+        ...(process.env.NODE_ENV === "development"
+          ? {
+              missingEnv: missing,
+              hint: "Set these in .env.local (project root) and restart `next dev`. On AWS Amplify, add them under App settings → Environment variables and redeploy.",
+            }
+          : {}),
+      },
       { status: 503 },
     );
   }

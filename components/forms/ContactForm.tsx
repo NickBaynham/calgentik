@@ -49,7 +49,17 @@ export function ContactForm() {
           : "Something went wrong. Please try again.";
 
       if (!res.ok) {
-        setErrorMessage(messageText);
+        let detail = messageText;
+        if (typeof data === "object" && data !== null) {
+          const rec = data as Record<string, unknown>;
+          if (Array.isArray(rec.missingEnv) && rec.missingEnv.every((x) => typeof x === "string")) {
+            detail += ` Missing: ${(rec.missingEnv as string[]).join(", ")}.`;
+          }
+          if (typeof rec.hint === "string" && rec.hint.length > 0) {
+            detail += ` ${rec.hint}`;
+          }
+        }
+        setErrorMessage(detail);
         setState("error");
         return;
       }

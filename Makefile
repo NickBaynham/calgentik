@@ -19,7 +19,7 @@ setup-ci: ## Install exactly from lockfile (npm ci — matches GitHub Actions)
 configure: ## Create .env.local from .env.example if it does not exist yet
 	@if [ ! -f .env.local ]; then \
 		cp .env.example .env.local; \
-		echo "Created .env.local — edit values for your environment."; \
+		echo "Created .env.local — edit values; for Contact form email set RESEND_API_KEY and CONTACT_INBOX_EMAIL (see .env.example, guides/aws-amplify.md)."; \
 	else \
 		echo ".env.local already exists — leaving it unchanged."; \
 	fi
